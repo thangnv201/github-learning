@@ -1,5 +1,6 @@
 import ForgeUI, { Code, Fragment, Text, Heading, Image, Table, Row, Cell, Head, useState } from "@forge/ui";
 import api from '@forge/api';
+import { NoOfBranch } from "./branch";
 
 export const RepoList = (props) => {
     const [repositorys] = useState(async () => {
@@ -31,7 +32,7 @@ export const RepoList = (props) => {
             {repositorys.map(repo => (
                 <Row>
                     <Cell><Text>{repo.full_name}</Text></Cell>
-                    <Cell></Cell>
+                    <Cell><NoOfBranch name={repo.full_name}></NoOfBranch></Cell>
                     <Cell></Cell>
                 </Row>
             ))}
