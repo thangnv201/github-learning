@@ -18,6 +18,7 @@ providers:
       name: github
       scopes:
         - 'user'
+        - 'repo'
       type: oauth2
       clientId: d1ee0baeb0b79e24288f
       bearerMethod: authorization-header

@@ -1,14 +1,13 @@
 import ForgeUI, { render, Fragment, Text, IssuePanel,useState,Code } from '@forge/ui';
 import api from '@forge/api';
+import { RepoList } from './repo';
 
 const App = () => {
   const [data] = useState(async () => {
     const github = api.asUser().withProvider('github', 'github-apis')
-    console.log(github.hasCredentials());
     if (!await github.hasCredentials()) {
       await github.requestCredentials()
     }
-    
     const response = await github.fetch('/user');
     if (response.status === 401)  {
       await github.requestCredentials();
@@ -26,8 +25,8 @@ const App = () => {
 
   return (
     <Fragment>
-      <Text>Hello world!</Text>
-      <Code text={JSON.stringify(data, null, 2)} language="json" showLineNumbers />
+      <Text>Hello {data.login}</Text>
+      <RepoList user={data.login}></RepoList>
     </Fragment>
   );
 };
