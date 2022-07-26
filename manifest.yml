@@ -1,0 +1,50 @@
+modules:
+  jira:issuePanel:
+    - key: github-learning-hello-world-panel
+      function: main
+      title: github-learning
+      icon: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+  function:
+    - key: main
+      handler: index.run
+      providers:
+       auth:
+        - github
+app:
+  id: ari:cloud:ecosystem::app/6cace951-6491-4529-adaa-b431ad35d6b8
+providers:
+  auth:
+    - key: github
+      name: github
+      scopes:
+        - 'user'
+      type: oauth2
+      clientId: d1ee0baeb0b79e24288f
+      bearerMethod: authorization-header
+      remotes:
+        - github-apis
+      actions:
+        authorization:
+          remote: github-auth
+          path: /login/oauth/authorize
+        exchange:
+          remote: github-auth
+          path: /login/oauth/access_token
+        retrieveProfile:
+          remote: github-apis
+          path: /user
+          resolvers:
+            id: id
+            displayName: login
+            avatarUrl: avatar_url
+remotes:
+  - key: github-auth
+    baseUrl: https://github.com
+  - key: github-apis
+    baseUrl: https://api.github.com/
+permissions:
+  external:
+    fetch:
+      backend:
+        - 'https://github.com'
+        - 'https://api.github.com/'
