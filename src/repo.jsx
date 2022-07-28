@@ -1,12 +1,13 @@
-import ForgeUI, { Code, Fragment, Text,Link, Heading, Image, Table, Row, Cell, Head, useState } from "@forge/ui";
+import ForgeUI, { Code, Fragment, Text, Link, Heading, ModalDialog, Table, Row, Cell, Head, useState, Button, Select, Option, Form } from "@forge/ui";
 import api from '@forge/api';
-import { NoOfBranch } from "./branch";
-
+import { Details } from "./details";
 export const RepoList = (props) => {
+    const [isOpen, setOpen] = useState(false);
+    const [formState, setFormState] = useState(undefined);
+
     const [repositorys] = useState(async () => {
         const github = api.asUser().withProvider('github', 'github-apis')
         const response = await github.fetch(`/users/${props.user}/repos`);
-        console.log(response.json());
         if (response.ok) {
             return response.json()
         }
@@ -17,26 +18,26 @@ export const RepoList = (props) => {
             text: await response.text(),
         }
     })
-    console.log(repositorys.length);
+
+    const onSubmit = async (formData) => {
+        setFormState(formData);
+        setOpen(true)
+    };
+
     return (<Fragment>
+
         <Text>
             Repository {props.user}
-
         </Text>
-        <Table>
-            <Head>
-                <Cell><Text>Repo name</Text></Cell>
-                <Cell><Text>No of Branch</Text></Cell>
-                <Cell><Text>No of commit</Text></Cell>
-            </Head>
-            {repositorys.map(repo => (
-                <Row>
-                    <Cell><Text><Link openNewTab="true" href={repo.html_url}>{repo.full_name}</Link ></Text></Cell>
-                    <Cell><NoOfBranch name={repo.full_name}></NoOfBranch></Cell>
-                    <Cell></Cell>
-                </Row>
-            ))}
+        <Form onSubmit={onSubmit}>
+            <Select isRequired label="Choose the repository" name="repository">
+                {repositorys.map(repo =>
+                    (<Option label={repo.full_name} value={repo.full_name} />)
+                )}
+            </Select>
+        </Form>
+        {isOpen && (<Details open={setOpen} repository={formState.repository}></Details>
+        )}
 
-        </Table>
     </Fragment>)
 };
